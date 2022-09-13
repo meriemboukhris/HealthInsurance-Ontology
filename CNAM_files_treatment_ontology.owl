@@ -1,0 +1,436 @@
+@prefix : <http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@base <http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology> .
+
+<http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology> rdf:type owl:Ontology ;
+                                                                                 rdfs:comment """CNAM-files-treatment ontology is an ontology that addresses the budget deficit of CNAM and the slow processing of medical records by creating a customized and adaptive policy based on the patient's health status(required medical process as mentionned in the filed medcial record) as well as his social status (relative to SMIG regime).
+This ontology aims at satisfying both the service's providers and receivers by providing this customized and targeted policy.
+
+This ontology is simplified and could represent a \"croquis\" for a more complex and larger project in which more parameters can be taken into consideration."""@en .
+
+#################################################################
+#    Object Properties
+#################################################################
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#HasA
+:HasA rdf:type owl:ObjectProperty ;
+      rdfs:domain :Customer ;
+      rdfs:range :MedicalRecord ,
+                 :ReturnBenefit .
+
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#Insures
+:Insures rdf:type owl:ObjectProperty ;
+         owl:inverseOf :IsInsuredBy ;
+         rdf:type owl:IrreflexiveProperty ;
+         rdfs:domain :AffiliatedOrganization ;
+         rdfs:range :Customer .
+
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#IsInsuredBy
+:IsInsuredBy rdf:type owl:ObjectProperty ,
+                      owl:IrreflexiveProperty ;
+             rdfs:domain :Customer ;
+             rdfs:range :AffiliatedOrganization .
+
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#Requires
+:Requires rdf:type owl:ObjectProperty ;
+          rdfs:domain :Customer ;
+          rdfs:range :MedicalProcedure .
+
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#hasProvided
+:hasProvided rdf:type owl:ObjectProperty ;
+             rdfs:domain :Customer ;
+             rdfs:range :MedicalRecord .
+
+
+#################################################################
+#    Data properties
+#################################################################
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#Age
+:Age rdf:type owl:DatatypeProperty ;
+     rdfs:domain :Customer ;
+     rdfs:range xsd:integer .
+
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#File_ID
+:File_ID rdf:type owl:DatatypeProperty ;
+         rdfs:domain :Customer ;
+         rdfs:range xsd:long .
+
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#Medical_procedure
+:Medical_procedure rdf:type owl:DatatypeProperty ;
+                   rdfs:domain :Customer ;
+                   rdfs:range xsd:string .
+
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#MonthlyRevenue
+:MonthlyRevenue rdf:type owl:DatatypeProperty ;
+                rdfs:domain :Customer ;
+                rdfs:range xsd:double .
+
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#Patient_ID
+:Patient_ID rdf:type owl:DatatypeProperty ;
+            rdfs:domain :Customer ;
+            rdfs:range xsd:long .
+
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#Sector
+:Sector rdf:type owl:DatatypeProperty ;
+        rdfs:domain :Customer ;
+        rdfs:range xsd:string .
+
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#Waiting_period
+:Waiting_period rdf:type owl:DatatypeProperty ;
+                rdfs:domain :Customer ;
+                rdfs:range xsd:integer .
+
+
+#################################################################
+#    Classes
+#################################################################
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#AffiliatedOrganization
+:AffiliatedOrganization rdf:type owl:Class ;
+                        rdfs:subClassOf owl:Thing .
+
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#CNRPS
+:CNRPS rdf:type owl:Class ;
+       owl:equivalentClass [ rdf:type owl:Restriction ;
+                             owl:onProperty :Sector ;
+                             owl:hasValue "Public"
+                           ] ;
+       rdfs:subClassOf :AffiliatedOrganization .
+
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#CNSS
+:CNSS rdf:type owl:Class ;
+      owl:equivalentClass [ rdf:type owl:Restriction ;
+                            owl:onProperty :Sector ;
+                            owl:hasValue "Private"
+                          ] ;
+      rdfs:subClassOf :AffiliatedOrganization ;
+      rdfs:comment "Caisse Nationale de Retraite et de Prévoyance Sociale: For public sectors affiliated individuals."@en ,
+                   "Caisse Nationale de Sécurité Sociale: For private sectors affiliated individuals."@en .
+
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#CompleteRecord
+:CompleteRecord rdf:type owl:Class ;
+                owl:equivalentClass [ owl:intersectionOf ( [ rdf:type owl:Restriction ;
+                                                             owl:onProperty :hasProvided ;
+                                                             owl:hasValue :Blood_test
+                                                           ]
+                                                           [ rdf:type owl:Restriction ;
+                                                             owl:onProperty :hasProvided ;
+                                                             owl:hasValue :Radiological_examination
+                                                           ]
+                                                         ) ;
+                                      rdf:type owl:Class
+                                    ] ;
+                rdfs:subClassOf :State ;
+                owl:disjointWith :IncompleteRecord ;
+                rdfs:comment "A medical record is said to be complete if it contains both Radiological examination as well as a blood test."@en .
+
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#Customer
+:Customer rdf:type owl:Class ;
+          rdfs:subClassOf owl:Thing ;
+          rdfs:comment "Is an insured person who is eligible for medical benefits or other services covered by a health policy provided by CNAM affiliated organization."@en .
+
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#ElectiveSurgery
+:ElectiveSurgery rdf:type owl:Class ;
+                 rdfs:subClassOf :MedicalProcedure ;
+                 rdfs:comment "A medical procedure that is pre planned and based on the availability of scheduling for the patient, surgeon and facility."@en .
+
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#FourteenWorkingDaysReturn
+:FourteenWorkingDaysReturn rdf:type owl:Class ;
+                           owl:equivalentClass [ rdf:type owl:Restriction ;
+                                                 owl:onProperty :Requires ;
+                                                 owl:hasValue :Medication
+                                               ] ;
+                           rdfs:subClassOf :WaitingTime .
+
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#FullCoverage
+:FullCoverage rdf:type owl:Class ;
+              owl:equivalentClass [ rdf:type owl:Restriction ;
+                                    owl:onProperty :MonthlyRevenue ;
+                                    owl:hasValue "450.0"^^xsd:double
+                                  ] ;
+              rdfs:subClassOf :ReturnBenefit .
+
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#IncompleteRecord
+:IncompleteRecord rdf:type owl:Class ;
+                  owl:equivalentClass [ rdf:type owl:Restriction ;
+                                        owl:onProperty :hasProvided ;
+                                        owl:allValuesFrom [ rdf:type owl:Class ;
+                                                            owl:oneOf ( :Blood_test
+                                                                        :Radiological_examination
+                                                                      )
+                                                          ]
+                                      ] ;
+                  rdfs:subClassOf :State ;
+                  rdfs:comment "A medical record is said to be incomplete if it does not contain both Radiological examination or Blood test."@en .
+
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#MedicalProcedure
+:MedicalProcedure rdf:type owl:Class ;
+                  rdfs:subClassOf owl:Thing ;
+                  rdfs:comment "Medical procedures filed by insured individuals and categorized based on the urgency of the surgery: Urgent Surgery and Elective Surgery."@en .
+
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#MedicalRecord
+:MedicalRecord rdf:type owl:Class ;
+               rdfs:subClassOf owl:Thing ;
+               rdfs:comment "Medical records are the document that explains all detail about the patient's history, clinical findings, diagnostic test results, pre and postoperative care, patient's progress and medication and the medical procedure he is asking the health insurance to cober. If written correctly and is complete, it will support the CNAM doctor decide about the outcome of this record(Delay of response-Return Benefit)."@en .
+
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#Molka
+:Molka rdf:type owl:Class ;
+       rdfs:subClassOf :Customer ,
+                       [ owl:intersectionOf ( [ rdf:type owl:Restriction ;
+                                                owl:onProperty :hasProvided ;
+                                                owl:hasValue :Blood_test
+                                              ]
+                                              [ rdf:type owl:Restriction ;
+                                                owl:onProperty :hasProvided ;
+                                                owl:hasValue :Radiological_examination
+                                              ]
+                                            ) ;
+                         rdf:type owl:Class
+                       ] ,
+                       [ rdf:type owl:Restriction ;
+                         owl:onProperty :Requires ;
+                         owl:hasValue :APCI
+                       ] ,
+                       [ rdf:type owl:Restriction ;
+                         owl:onProperty :MonthlyRevenue ;
+                         owl:hasValue "1600.0"^^xsd:double
+                       ] ,
+                       [ rdf:type owl:Restriction ;
+                         owl:onProperty :Sector ;
+                         owl:hasValue "Public"
+                       ] .
+
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#ReturnBenefit
+:ReturnBenefit rdf:type owl:Class ;
+               rdfs:subClassOf owl:Thing ;
+               rdfs:comment "The health care items or services covered under a health insurance plan."@en .
+
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#SevenWorkingDaysReturn
+:SevenWorkingDaysReturn rdf:type owl:Class ;
+                        owl:equivalentClass [ rdf:type owl:Class ;
+                                              owl:unionOf ( [ rdf:type owl:Restriction ;
+                                                              owl:onProperty :Requires ;
+                                                              owl:hasValue :CataractExtraction
+                                                            ]
+                                                            [ rdf:type owl:Restriction ;
+                                                              owl:onProperty :Requires ;
+                                                              owl:hasValue :HerniaRepair
+                                                            ]
+                                                            [ rdf:type owl:Restriction ;
+                                                              owl:onProperty :Requires ;
+                                                              owl:hasValue :HipProthesis
+                                                            ]
+                                                            [ rdf:type owl:Restriction ;
+                                                              owl:onProperty :Requires ;
+                                                              owl:hasValue :Tonsillectomy
+                                                            ]
+                                                          )
+                                            ] ;
+                        rdfs:subClassOf :WaitingTime .
+
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#State
+:State rdf:type owl:Class ;
+       rdfs:subClassOf :MedicalRecord ;
+       rdfs:comment "Gives information about the state of the medical record of the patient to help the health insurance doctor in the processing of medical records."@en .
+
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#TenWorkingDaysReturn
+:TenWorkingDaysReturn rdf:type owl:Class ;
+                      owl:equivalentClass [ rdf:type owl:Restriction ;
+                                            owl:onProperty :Requires ;
+                                            owl:hasValue :APCI
+                                          ] ;
+                      rdfs:subClassOf :WaitingTime .
+
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#ThreeWorkingDaysReturn
+:ThreeWorkingDaysReturn rdf:type owl:Class ;
+                        owl:equivalentClass [ rdf:type owl:Class ;
+                                              owl:unionOf ( [ rdf:type owl:Restriction ;
+                                                              owl:onProperty :Requires ;
+                                                              owl:hasValue :Amputation
+                                                            ]
+                                                            [ rdf:type owl:Restriction ;
+                                                              owl:onProperty :Requires ;
+                                                              owl:hasValue :Appendectomy
+                                                            ]
+                                                            [ rdf:type owl:Restriction ;
+                                                              owl:onProperty :Requires ;
+                                                              owl:hasValue :CarcinologicalSurgery
+                                                            ]
+                                                            [ rdf:type owl:Restriction ;
+                                                              owl:onProperty :Requires ;
+                                                              owl:hasValue :RemovalOfGallBladder
+                                                            ]
+                                                            [ rdf:type owl:Restriction ;
+                                                              owl:onProperty :Requires ;
+                                                              owl:hasValue :ThoracicSurgery
+                                                            ]
+                                                          )
+                                            ] ;
+                        rdfs:subClassOf :WaitingTime .
+
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#UrgentSurgery
+:UrgentSurgery rdf:type owl:Class ;
+               rdfs:subClassOf :MedicalProcedure ;
+               rdfs:comment "Must be done within a reasonably short time frame to preserve health."@en .
+
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#WaitingTime
+:WaitingTime rdf:type owl:Class ;
+             rdfs:subClassOf owl:Thing ;
+             rdfs:comment "In health insurance context, it refers to the amount of time you need to wait for, from the start of your policy, to be able to use the benefits of it."@en .
+
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#meriem
+:meriem rdf:type owl:Class ;
+        rdfs:subClassOf :Customer ,
+                        [ rdf:type owl:Restriction ;
+                          owl:onProperty :hasProvided ;
+                          owl:allValuesFrom [ rdf:type owl:Class ;
+                                              owl:oneOf ( :Radiological_examination
+                                                        )
+                                            ]
+                        ] ,
+                        [ rdf:type owl:Restriction ;
+                          owl:onProperty :Requires ;
+                          owl:hasValue :ThoracicSurgery
+                        ] ,
+                        [ rdf:type owl:Restriction ;
+                          owl:onProperty :MonthlyRevenue ;
+                          owl:hasValue "490.0"^^xsd:double
+                        ] ,
+                        [ rdf:type owl:Restriction ;
+                          owl:onProperty :Sector ;
+                          owl:hasValue "Private"
+                        ] .
+
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#50PercentCoverage
+<http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#50PercentCoverage> rdf:type owl:Class ;
+                                                                                                  owl:equivalentClass [ rdf:type owl:Restriction ;
+                                                                                                                        owl:onProperty :MonthlyRevenue ;
+                                                                                                                        owl:someValuesFrom [ rdf:type rdfs:Datatype ;
+                                                                                                                                             owl:onDatatype xsd:double ;
+                                                                                                                                             owl:withRestrictions ( [ xsd:minInclusive "1350.0"^^xsd:double
+                                                                                                                                                                    ]
+                                                                                                                                                                  )
+                                                                                                                                           ]
+                                                                                                                      ] ;
+                                                                                                  rdfs:subClassOf :ReturnBenefit .
+
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#70PercentCoverage
+<http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#70PercentCoverage> rdf:type owl:Class ;
+                                                                                                  owl:equivalentClass [ rdf:type owl:Restriction ;
+                                                                                                                        owl:onProperty :MonthlyRevenue ;
+                                                                                                                        owl:someValuesFrom [ rdf:type rdfs:Datatype ;
+                                                                                                                                             owl:onDatatype xsd:double ;
+                                                                                                                                             owl:withRestrictions ( [ xsd:minInclusive "450.0"^^xsd:double
+                                                                                                                                                                    ]
+                                                                                                                                                                    [ xsd:maxInclusive "1350.0"^^xsd:double
+                                                                                                                                                                    ]
+                                                                                                                                                                  )
+                                                                                                                                           ]
+                                                                                                                      ] ;
+                                                                                                  rdfs:subClassOf :ReturnBenefit .
+
+
+#################################################################
+#    Individuals
+#################################################################
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#APCI
+:APCI rdf:type owl:NamedIndividual .
+
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#Amputation
+:Amputation rdf:type owl:NamedIndividual ,
+                     :UrgentSurgery .
+
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#Appendectomy
+:Appendectomy rdf:type owl:NamedIndividual ,
+                       :UrgentSurgery .
+
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#Blood_test
+:Blood_test rdf:type owl:NamedIndividual ,
+                     :MedicalRecord .
+
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#CarcinologicalSurgery
+:CarcinologicalSurgery rdf:type owl:NamedIndividual ,
+                                :UrgentSurgery .
+
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#CataractExtraction
+:CataractExtraction rdf:type owl:NamedIndividual ,
+                             :ElectiveSurgery .
+
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#HerniaRepair
+:HerniaRepair rdf:type owl:NamedIndividual ,
+                       :ElectiveSurgery .
+
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#HipProthesis
+:HipProthesis rdf:type owl:NamedIndividual ,
+                       :ElectiveSurgery .
+
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#Medication
+:Medication rdf:type owl:NamedIndividual .
+
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#Radiological_examination
+:Radiological_examination rdf:type owl:NamedIndividual ,
+                                   :MedicalRecord .
+
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#RemovalOfGallBladder
+:RemovalOfGallBladder rdf:type owl:NamedIndividual ,
+                               :UrgentSurgery .
+
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#ThoracicSurgery
+:ThoracicSurgery rdf:type owl:NamedIndividual ,
+                          :UrgentSurgery .
+
+
+###  http://www.semanticweb.org/hp/ontologies/2022/5/CNAM_files-treatment_ontology#Tonsillectomy
+:Tonsillectomy rdf:type owl:NamedIndividual ,
+                        :ElectiveSurgery .
+
+
+###  Generated by the OWL API (version 4.5.9.2019-02-01T07:24:44Z) https://github.com/owlcs/owlapi
